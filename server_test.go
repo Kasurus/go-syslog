@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Kasurus/go-syslog/format"
+	"github.com/Kasurus/go-syslog.v2/format"
 	. "gopkg.in/check.v1"
 )
 

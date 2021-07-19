@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Kasurus/go-syslog/format"
+	"github.com/Kasurus/go-syslog.v2/format"
 )
 
 var (

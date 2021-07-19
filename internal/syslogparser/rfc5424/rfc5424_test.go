@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Kasurus/go-syslog/internal/syslogparser"
+	"github.com/Kasurus/go-syslog.v2/internal/syslogparser"
 	. "gopkg.in/check.v1"
 )
 
