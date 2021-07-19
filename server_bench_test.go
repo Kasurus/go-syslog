@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/Kasurus/go-syslog.v2/format"
+	"github.com/Kasurus/go-syslog/v3/format"
 )
 
 type noopFormatter struct{}
