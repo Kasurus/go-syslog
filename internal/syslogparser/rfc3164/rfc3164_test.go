@@ -31,7 +31,7 @@ func (s *Rfc3164TestSuite) TestParser_Valid(c *C) {
 		buff:     buff,
 		cursor:   0,
 		l:        len(buff),
-		location: time.UTC,
+		location: time.Local,
 	}
 
 	c.Assert(p, DeepEquals, expectedP)
@@ -43,7 +43,7 @@ func (s *Rfc3164TestSuite) TestParser_Valid(c *C) {
 
 	obtained := p.Dump()
 	expected := syslogparser.LogParts{
-		"timestamp": time.Date(now.Year(), time.October, 11, 22, 14, 15, 0, time.UTC),
+		"timestamp": time.Date(now.Year(), time.October, 11, 22, 14, 15, 0, time.Local),
 		"hostname":  "mymachine",
 		"tag":       "very.large.syslog.message.tag",
 		"content":   "'su root' failed for lonvick on /dev/pts/8",
@@ -63,7 +63,7 @@ func (s *Rfc3164TestSuite) TestParser_ValidNoTag(c *C) {
 		buff:     buff,
 		cursor:   0,
 		l:        len(buff),
-		location: time.UTC,
+		location: time.Local,
 	}
 
 	c.Assert(p, DeepEquals, expectedP)
@@ -75,7 +75,7 @@ func (s *Rfc3164TestSuite) TestParser_ValidNoTag(c *C) {
 
 	obtained := p.Dump()
 	expected := syslogparser.LogParts{
-		"timestamp": time.Date(now.Year(), time.October, 11, 22, 14, 15, 0, time.UTC),
+		"timestamp": time.Date(now.Year(), time.October, 11, 22, 14, 15, 0, time.Local),
 		"hostname":  "mymachine",
 		"tag":       "",
 		"content":   "singleword",
@@ -96,7 +96,7 @@ func (s *Rfc3164TestSuite) TestParser_NoTimestamp(c *C) {
 		buff:     buff,
 		cursor:   0,
 		l:        len(buff),
-		location: time.UTC,
+		location: time.Local,
 	}
 
 	c.Assert(p, DeepEquals, expectedP)
@@ -134,7 +134,7 @@ func (s *Rfc3164TestSuite) TestParser_NoPriority(c *C) {
 		buff:     buff,
 		cursor:   0,
 		l:        len(buff),
-		location: time.UTC,
+		location: time.Local,
 	}
 
 	c.Assert(p, DeepEquals, expectedP)
@@ -166,7 +166,7 @@ func (s *Rfc3164TestSuite) TestParseHeader_Valid(c *C) {
 	buff := []byte("Oct 11 22:14:15 mymachine ")
 	now := time.Now()
 	hdr := header{
-		timestamp: time.Date(now.Year(), time.October, 11, 22, 14, 15, 0, time.UTC),
+		timestamp: time.Date(now.Year(), time.October, 11, 22, 14, 15, 0, time.Local),
 		hostname:  "mymachine",
 	}
 
@@ -174,7 +174,7 @@ func (s *Rfc3164TestSuite) TestParseHeader_Valid(c *C) {
 
 	// expected header for next two tests
 	hdr = header{
-		timestamp: time.Date(now.Year(), time.October, 1, 22, 14, 15, 0, time.UTC),
+		timestamp: time.Date(now.Year(), time.October, 1, 22, 14, 15, 0, time.Local),
 		hostname:  "mymachine",
 	}
 	// day with leading zero
@@ -240,33 +240,33 @@ func (s *Rfc3164TestSuite) TestParseTimestamp_Invalid(c *C) {
 
 func (s *Rfc3164TestSuite) TestParseTimestamp_TrailingSpace(c *C) {
 	// XXX : no year specified. Assumed current year
-	// XXX : no timezone specified. Assume UTC
+	// XXX : no timezone specified. Assume Local
 	buff := []byte("Oct 11 22:14:15 ")
 
 	now := time.Now()
-	ts := time.Date(now.Year(), time.October, 11, 22, 14, 15, 0, time.UTC)
+	ts := time.Date(now.Year(), time.October, 11, 22, 14, 15, 0, time.Local)
 
 	s.assertTimestamp(c, ts, buff, len(buff), nil)
 }
 
 func (s *Rfc3164TestSuite) TestParseTimestamp_OneDigitForMonths(c *C) {
 	// XXX : no year specified. Assumed current year
-	// XXX : no timezone specified. Assume UTC
+	// XXX : no timezone specified. Assume Local
 	buff := []byte("Oct  1 22:14:15")
 
 	now := time.Now()
-	ts := time.Date(now.Year(), time.October, 1, 22, 14, 15, 0, time.UTC)
+	ts := time.Date(now.Year(), time.October, 1, 22, 14, 15, 0, time.Local)
 
 	s.assertTimestamp(c, ts, buff, len(buff), nil)
 }
 
 func (s *Rfc3164TestSuite) TestParseTimestamp_Valid(c *C) {
 	// XXX : no year specified. Assumed current year
-	// XXX : no timezone specified. Assume UTC
+	// XXX : no timezone specified. Assume Local
 	buff := []byte("Oct 11 22:14:15")
 
 	now := time.Now()
-	ts := time.Date(now.Year(), time.October, 11, 22, 14, 15, 0, time.UTC)
+	ts := time.Date(now.Year(), time.October, 11, 22, 14, 15, 0, time.Local)
 
 	s.assertTimestamp(c, ts, buff, len(buff), nil)
 }

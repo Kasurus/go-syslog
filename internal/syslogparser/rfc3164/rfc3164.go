@@ -182,6 +182,14 @@ func (p *Parser) parseTimestamp() (time.Time, error) {
 
 		sub = p.buff[p.cursor : tsFmtLen+p.cursor]
 		ts, err = time.ParseInLocation(tsFmt, string(sub), p.location)
+
+		// Set timezone to UTC if timezone is empty
+		// Assume '2018-01-12 22:14:15 +0000 +0000' is UTC
+		timeZoneName, timeZoneOffset := ts.Zone()
+		if timeZoneName == "" && timeZoneOffset == 0 {
+			ts = ts.UTC()
+		}
+
 		if err == nil {
 			found = true
 			break
