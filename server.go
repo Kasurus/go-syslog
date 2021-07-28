@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"net"
+	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -372,6 +373,7 @@ func (s *Server) goParseDatagrams() {
 				if !ok {
 					return
 				}
+				msg.message = replaceNewlineWithSpace(msg.message)
 				if sf := s.format.GetSplitFunc(); sf != nil {
 					if _, token, err := sf(msg.message, true); err == nil {
 						s.parser(token, msg.client, "")
@@ -383,4 +385,9 @@ func (s *Server) goParseDatagrams() {
 			}
 		}
 	}()
+}
+
+func replaceNewlineWithSpace(s []byte) []byte {
+	re := regexp.MustCompile(`\r\n|\r|\n`)
+	return re.ReplaceAll(s, []byte(" "))
 }

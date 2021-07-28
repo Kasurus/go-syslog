@@ -18,11 +18,11 @@ type ServerSuite struct {
 
 var _ = Suite(&ServerSuite{})
 var exampleSyslog = "<31>Dec 26 05:08:46 hostname tag[296]: content"
-var exampleSyslogWithNewLine = "<31>Dec 26 05:08:46 hostname tag[296]: content\nNewLine"
+var exampleSyslogWithNewLine = "<31>Dec 26 05:08:46 hostname tag[296]: contentX\nNewLine"
 var exampleSyslogNoTSTagHost = "<14>INFO     leaving (1) step postscripts"
 var exampleSyslogNoPriority = "Dec 26 05:08:46 hostname test with no priority - see rfc 3164 section 4.3.3"
 var exampleRFC5424Syslog = "<34>1 2003-10-11T22:14:15.003Z mymachine.example.com su - ID47 - 'su root' failed for lonvick on /dev/pts/8"
-var exampleRFC5424SyslogWithNewLine = "<34>1 2003-10-11T22:14:15.003Z mymachine.example.com su - ID47 - 'su root' failed for lonvick on /dev/pts/8\nNew Line"
+var exampleRFC5424SyslogWithNewLine = "<34>1 2003-10-11T22:14:15.003Z mymachine.example.com su - ID47 - 'su root' failed for lonvick on /dev/pts/8X\nNew Line"
 
 func (s *ServerSuite) TestTailFile(c *C) {
 	handler := new(HandlerMock)
@@ -236,8 +236,8 @@ func (s *ServerSuite) TestUDP6587NewLine(c *C) {
 	server.Wait()
 	c.Check(handler.LastLogParts["hostname"], Equals, "mymachine.example.com")
 	c.Check(handler.LastLogParts["facility"], Equals, 4)
-	c.Check(handler.LastLogParts["message"], Equals, "'su root' failed for lonvick on /dev/pts/8 New Line")
-	c.Check(handler.LastMessageLength, Equals, int64(len(exampleRFC5424Syslog)))
+	c.Check(handler.LastLogParts["message"], Equals, "'su root' failed for lonvick on /dev/pts/8X New Line")
+	c.Check(handler.LastMessageLength, Equals, int64(len(exampleRFC5424SyslogWithNewLine)))
 	c.Check(handler.LastError, IsNil)
 }
 
@@ -270,7 +270,7 @@ func (s *ServerSuite) TestUDPAutomatic3164NewLine(c *C) {
 	server.Wait()
 	c.Check(handler.LastLogParts["hostname"], Equals, "hostname")
 	c.Check(handler.LastLogParts["tag"], Equals, "tag")
-	c.Check(handler.LastLogParts["content"], Equals, "content NewLine")
+	c.Check(handler.LastLogParts["content"], Equals, "contentX NewLine")
 	c.Check(handler.LastMessageLength, Equals, int64(len(exampleSyslogWithNewLine)))
 	c.Check(handler.LastError, IsNil)
 }
@@ -304,7 +304,7 @@ func (s *ServerSuite) TestUDPAutomatic5424NewLine(c *C) {
 	server.Wait()
 	c.Check(handler.LastLogParts["hostname"], Equals, "mymachine.example.com")
 	c.Check(handler.LastLogParts["facility"], Equals, 4)
-	c.Check(handler.LastLogParts["message"], Equals, "'su root' failed for lonvick on /dev/pts/8 New Line")
+	c.Check(handler.LastLogParts["message"], Equals, "'su root' failed for lonvick on /dev/pts/8X New Line")
 	c.Check(handler.LastMessageLength, Equals, int64(len(exampleRFC5424SyslogWithNewLine)))
 	c.Check(handler.LastError, IsNil)
 }
