@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"crypto/tls"
 	"errors"
+	"log"
 	"net"
 	"regexp"
 	"strings"
@@ -353,6 +354,7 @@ func (s *Server) goReceiveDatagrams(packetconn net.PacketConn) {
 				// interface being shutdown in which case sleep() to avoid busy wait.
 				opError, ok := err.(*net.OpError)
 				if (ok) && !opError.Temporary() && !opError.Timeout() {
+					log.Println(err)
 					return
 				}
 				time.Sleep(10 * time.Millisecond)
@@ -373,13 +375,13 @@ func (s *Server) goParseDatagrams() {
 				if !ok {
 					return
 				}
-				msg.message = replaceNewlineWithSpace(msg.message)
+				messageWithoutNewline := replaceNewlineWithSpace(msg.message)
 				if sf := s.format.GetSplitFunc(); sf != nil {
-					if _, token, err := sf(msg.message, true); err == nil {
+					if _, token, err := sf(messageWithoutNewline, true); err == nil {
 						s.parser(token, msg.client, "")
 					}
 				} else {
-					s.parser(msg.message, msg.client, "")
+					s.parser(messageWithoutNewline, msg.client, "")
 				}
 				s.datagramPool.Put(msg.message[:cap(msg.message)])
 			}
